@@ -1,0 +1,127 @@
+{
+  "version": 1,
+  "projects": {
+    "jest-marbles-ngrx-bug": {
+      "projectType": "application",
+      "root": "apps/jest-marbles-ngrx-bug",
+      "sourceRoot": "apps/jest-marbles-ngrx-bug/src",
+      "prefix": "jest-marbles-ngrx-bug",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/jest-marbles-ngrx-bug",
+            "index": "apps/jest-marbles-ngrx-bug/src/index.html",
+            "main": "apps/jest-marbles-ngrx-bug/src/main.ts",
+            "polyfills": "apps/jest-marbles-ngrx-bug/src/polyfills.ts",
+            "tsConfig": "apps/jest-marbles-ngrx-bug/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "apps/jest-marbles-ngrx-bug/src/favicon.ico",
+              "apps/jest-marbles-ngrx-bug/src/assets"
+            ],
+            "styles": ["apps/jest-marbles-ngrx-bug/src/styles.scss"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "apps/jest-marbles-ngrx-bug/src/environments/environment.ts",
+                  "with": "apps/jest-marbles-ngrx-bug/src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "jest-marbles-ngrx-bug:build:production"
+            },
+            "development": {
+              "browserTarget": "jest-marbles-ngrx-bug:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "jest-marbles-ngrx-bug:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "apps/jest-marbles-ngrx-bug/src/**/*.ts",
+              "apps/jest-marbles-ngrx-bug/src/**/*.html"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/jest-marbles-ngrx-bug"],
+          "options": {
+            "jestConfig": "apps/jest-marbles-ngrx-bug/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      },
+      "tags": []
+    },
+    "jest-marbles-ngrx-bug-e2e": {
+      "root": "apps/jest-marbles-ngrx-bug-e2e",
+      "sourceRoot": "apps/jest-marbles-ngrx-bug-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/jest-marbles-ngrx-bug-e2e/cypress.json",
+            "devServerTarget": "jest-marbles-ngrx-bug:serve:development"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "jest-marbles-ngrx-bug:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["apps/jest-marbles-ngrx-bug-e2e/**/*.{js,ts}"]
+          }
+        }
+      },
+      "tags": [],
+      "implicitDependencies": ["jest-marbles-ngrx-bug"]
+    }
+  }
+}
