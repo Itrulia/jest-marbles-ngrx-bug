@@ -14,7 +14,11 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@jest-marbles-ngrx-bug/jasmine-test": ["libs/jasmine-test/src/index.ts"],
+      "@jest-marbles-ngrx-bug/jest-test": ["libs/jest-test/src/index.ts"],
+      "@jest-marbles-ngrx-bug/test": ["libs/test/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

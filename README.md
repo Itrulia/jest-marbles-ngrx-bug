@@ -1,105 +1,81 @@
+# Jest marbles bug with Ngrx `overrideSelector`
+
+While upgrading our repository from Nx 11.x & Angular 11.x to Nx 13.1.4 and Angular to v12.x we noticed all of our `expect(result).toBeObservable(expected)` that used `store.overrideSelector` started to fail. We narrowed it down to `jest-marbles` not properly working anymore.
+
+## The issue
+
+When you are using `@ngrx/store` and use the `MockStore` from `@ngrx/store/testing` and override a selector via `store.overrideSelector` it does not work when using `jest-marbles` `expect(result).toBeObservable(expected)`. When subscribing to the selector manually, the `store.overrideSelector` works as expected.
+
+## Expected outcome
+
+When you are using `@ngrx/store` and use the `MockStore` from `@ngrx/store/testing` and override a selector via `store.overrideSelector` the `expect(result).toBeObservable(expected)` assertion should work as expected.
+
+## How to reproduce
+
+In this repository I reproduced the issue with `jest-marbles` and copied the exact same test and replaced `jest-marbles` with `jasmine-marbles`.
+
+### Setup
+
+```bash
+$ npm install
+```
+
+### Run the tests
+
+You can either run all tests at once via:
+
+```bash
+$ npx jest
+```
+
+Or run the tests on their own via:
+
+```bash
+$ npx nx test jasmine-test
+```
+
+```bash
+$ npx nx test jest-test
+```
 
 
-# JestMarblesNgrxBug
+The tests for `jasmine-marbles` are located at `libs/jasmine-test/src/lib/test.component.spec.ts`.
 
-This project was generated using [Nx](https://nx.dev).
+The tests for `jest-marbles` are located at `libs/jest-test/src/lib/test.component.spec.ts`.
 
-<p style="text-align: center;"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="450"></p>
+The component that is being tested is located at `libs/test/src/lib/test.component.ts`.
 
-🔎 **Smart, Extensible Build Framework**
-
-## Quick Start & Documentation
-
-[Nx Documentation](https://nx.dev/angular)
-
-[10-minute video showing all Nx features](https://nx.dev/getting-started/intro)
-
-[Interactive Tutorial](https://nx.dev/tutorial/01-create-application)
-
-## Adding capabilities to your workspace
-
-Nx supports many plugins which add capabilities for developing different types of applications and different tools.
-
-These capabilities include generating applications, libraries, etc as well as the devtools to test, and build projects as well.
-
-Below are our core plugins:
-
-- [Angular](https://angular.io)
-  - `ng add @nrwl/angular`
-- [React](https://reactjs.org)
-  - `ng add @nrwl/react`
-- Web (no framework frontends)
-  - `ng add @nrwl/web`
-- [Nest](https://nestjs.com)
-  - `ng add @nrwl/nest`
-- [Express](https://expressjs.com)
-  - `ng add @nrwl/express`
-- [Node](https://nodejs.org)
-  - `ng add @nrwl/node`
-
-There are also many [community plugins](https://nx.dev/community) you could add.
-
-## Generate an application
-
-Run `ng g @nrwl/angular:app my-app` to generate an application.
-
-> You can use any of the plugins above to generate applications as well.
-
-When using Nx, you can create multiple applications and libraries in the same workspace.
-
-## Generate a library
-
-Run `ng g @nrwl/angular:lib my-lib` to generate a library.
-
-> You can also use any of the plugins above to generate libraries as well.
-
-Libraries are shareable across libraries and applications. They can be imported from `@jest-marbles-ngrx-bug/mylib`.
-
-## Development server
-
-Run `ng serve my-app` for a dev server. Navigate to http://localhost:4200/. The app will automatically reload if you change any of the source files.
-
-## Code scaffolding
-
-Run `ng g component my-component --project=my-app` to generate a new component.
-
-## Build
-
-Run `ng build my-app` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test my-app` to execute the unit tests via [Jest](https://jestjs.io).
-
-Run `nx affected:test` to execute the unit tests affected by a change.
-
-## Running end-to-end tests
-
-Run `ng e2e my-app` to execute the end-to-end tests via [Cypress](https://www.cypress.io).
-
-Run `nx affected:e2e` to execute the end-to-end tests affected by a change.
-
-## Understand your workspace
-
-Run `nx dep-graph` to see a diagram of the dependencies of your projects.
-
-## Further help
-
-Visit the [Nx Documentation](https://nx.dev/angular) to learn more.
+## Example test outcomes
 
 
+```bash
+❯ nx test jest-test
+ FAIL   jest-test  libs/jest-test/src/lib/test.component.spec.ts
+  Jest Marbles
+    ✕ should override the selector (toBeObservable hot) (37 ms)
+    ✕ should override the selector (toBeObservable cold) (8 ms)
+    ✓ should override the selector (subscribe) (4 ms)
+```
 
+```bash
+❯ nx test jasmine-test
+ PASS   jasmine-test  libs/jasmine-test/src/lib/test.component.spec.ts
+  Jasmine Marbles
+    ✓ should override the selector (toBeObservable hot) (32 ms)
+    ✓ should override the selector (toBeObservable cold) (9 ms)
+    ✓ should override the selector (subscribe) (7 ms)
+```
 
+## We tried and didn't try
 
+**We did try the following:**
 
-## ☁ Nx Cloud
+* Downgrading rxjs to ^6.0.0
+* Downgrading jasmine-marbles to ^2.0.0
+* Downgrading @ngrx/store to ^11.0.0
+* Using jasmine-marbles instead of jest-marbles -> This worked
 
-### Distributed Computation Caching & Distributed Task Execution
+**We didn't try the following:**
 
-<p style="text-align: center;"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-cloud-card.png"></p>
+* Downgrading Jest -> But this is most likely what broke the jest-marbles behaviour
 
-Nx Cloud pairs with Nx in order to enable you to build and test code more rapidly, by up to 10 times. Even teams that are new to Nx can connect to Nx Cloud and start saving time instantly.
-
-Teams using Nx gain the advantage of building full-stack applications with their preferred framework alongside Nx’s advanced code generation and project dependency graph, plus a unified experience for both frontend and backend developers.
-
-Visit [Nx Cloud](https://nx.app/) to learn more.
